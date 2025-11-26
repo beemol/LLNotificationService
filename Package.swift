@@ -15,11 +15,17 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.6.0"),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        //
+        .package(url: "https://github.com/beemol/LLApiService.git", branch: "main"),
+        //
+        .package(url: "https://github.com/beemol/LLCore.git", branch: "main"),
     ],
     targets: [
         .executableTarget(
             name: "LLNotificationService",
             dependencies: [
+                .product(name: "LLApiService", package: "LLApiService"),
+                .product(name: "LLCore", package: "LLCore"),
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver"),
                 .product(name: "Vapor", package: "vapor"),

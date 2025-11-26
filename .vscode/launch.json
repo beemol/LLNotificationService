@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:LLNotificationService}",
+            "name": "Debug LLNotificationService",
+            "program": "${workspaceFolder:LLNotificationService}/.build/debug/LLNotificationService",
+            "preLaunchTask": "swift: Build Debug LLNotificationService"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:LLNotificationService}",
+            "name": "Release LLNotificationService",
+            "program": "${workspaceFolder:LLNotificationService}/.build/release/LLNotificationService",
+            "preLaunchTask": "swift: Build Release LLNotificationService"
+        }
+    ]
+}
