@@ -51,5 +51,32 @@ extension MonitoringSettings {
             .sort(\.$createdAt, .descending)
             .first()
     }
+    
+    /// Update existing settings or create new one (enforces singleton pattern)
+    static func updateOrCreate(
+        pollingIntervalSeconds: Int,
+        balanceThreshold: Double,
+        notifyOnBalanceBelow: Bool,
+        notifyOnBalanceAbove: Bool,
+        on database: any Database) async throws {
+        // Check if settings already exist
+        if let existing = try await getCurrent(on: database) {
+            // Update existing settings
+            existing.pollingIntervalSeconds = pollingIntervalSeconds
+            existing.balanceThreshold = balanceThreshold
+            existing.notifyOnBalanceBelow = notifyOnBalanceBelow
+            existing.notifyOnBalanceAbove = notifyOnBalanceAbove
+            try await existing.save(on: database)
+        } else {
+            // Create new settings
+            let settings = MonitoringSettings(
+                pollingIntervalSeconds: pollingIntervalSeconds,
+                balanceThreshold: balanceThreshold,
+                notifyOnBalanceBelow: notifyOnBalanceBelow,
+                notifyOnBalanceAbove: notifyOnBalanceAbove
+            )
+            try await settings.save(on: database)
+        }
+    }
 }
 

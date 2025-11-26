@@ -93,30 +93,32 @@ struct MonitoringSettingsTests {
     @Test("Only one settings record should exist")
     func singletonSettings() async throws {
         try await withApp { app in
-            // Arrange & Act - try to create multiple settings
+            // Arrange - create first settings
             let settings1 = MonitoringSettings(
                 pollingIntervalSeconds: 60,
                 balanceThreshold: 1000.0,
                 notifyOnBalanceBelow: true,
                 notifyOnBalanceAbove: false
             )
-            let settings2 = MonitoringSettings(
+            try await settings1.save(on: app.db)
+            
+            // Act - update settings (should replace, not create new)
+            try await MonitoringSettings.updateOrCreate(
                 pollingIntervalSeconds: 30,
                 balanceThreshold: 500.0,
                 notifyOnBalanceBelow: true,
-                notifyOnBalanceAbove: true
+                notifyOnBalanceAbove: true,
+                on: app.db
             )
             
-            try await settings1.save(on: app.db)
-            try await settings2.save(on: app.db)
-            
-            // Assert - should have 2 records (we'll enforce singleton in controller)
+            // Assert - should only have 1 record
             let allSettings = try await MonitoringSettings.query(on: app.db).all()
-            #expect(allSettings.count == 2)
+            #expect(allSettings.count == 1)
             
-            // But getCurrent should return the most recent one
+            // And it should have the updated values
             let current = try await MonitoringSettings.getCurrent(on: app.db)
             #expect(current?.pollingIntervalSeconds == 30)
+            #expect(current?.balanceThreshold == 500.0)
         }
     }
     
