@@ -12,6 +12,7 @@ public func configure(_ app: Application) async throws {
 
     app.migrations.add(CreateTodo())
     app.migrations.add(CreateStoredExchangeCredential())
+    app.migrations.add(CreateMonitoringSettings())
 
     // register routes
     try routes(app)
